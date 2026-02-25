@@ -3,63 +3,298 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>STOKOM SORT</title>
-    <link rel="stylesheet" href="style.css">
+    <title>STOKOM SORT | Academic Randomizer</title>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --bg-light: #f8fafc;
+            --text-main: #1e293b;
+            --accent: #f43f5e;
+            --card-bg: #ffffff;
+            --cyber-dark: #0f172a;
+            --cyber-card: #1e293b;
+        }
+
+        body { 
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+            background: var(--bg-light); 
+            margin: 0; 
+            color: var(--text-main);
+            overflow-x: hidden;
+        }
+
+        .screen { min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 40px 20px; box-sizing: border-box; }
+        .hidden { display: none !important; }
+
+        /* --- SCREEN 1: SELECTION --- */
+        .logo-area { text-align: center; margin-bottom: 40px; }
+        .logo-area h1 { font-size: 3rem; margin: 0; letter-spacing: -1px; color: var(--primary); }
+        .button-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; width: 100%; max-width: 800px; }
+        .class-btn { 
+            padding: 25px; font-size: 1.1rem; font-weight: bold; cursor: pointer; border: none; 
+            background: var(--card-bg); color: var(--primary); border-radius: 16px; 
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+            transition: all 0.2s ease; border: 1px solid #e2e8f0;
+        }
+        .class-btn:hover { transform: translateY(-4px); background: var(--primary); color: white; border-color: var(--primary); }
+
+        /* --- SCREEN 2: TEACHER SETUP --- */
+        .setup-layout { display: flex; gap: 30px; width: 100%; max-width: 1200px; margin-top: 20px; }
+        .sidebar { flex: 1; background: #fff; padding: 20px; border-radius: 20px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; }
+        .main-setup { flex: 2; display: flex; flex-direction: column; gap: 20px; }
+        
+        .drop-zone { min-height: 100px; border: 2px dashed #cbd5e1; border-radius: 12px; padding: 10px; display: flex; flex-wrap: wrap; gap: 8px; transition: 0.3s; }
+        .rule-box { background: white; padding: 15px; border-radius: 16px; border-left: 6px solid #ccc; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .rule-box.red { border-color: #ef4444; }
+        .rule-box.green { border-color: #22c55e; }
+        .rule-box.orange { border-color: #f59e0b; }
+        
+        .student-pill { 
+            background: #f1f5f9; padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; 
+            cursor: grab; border: 1px solid #e2e8f0; user-select: none;
+        }
+        .student-pill:active { cursor: grabbing; opacity: 0.6; }
+
+        .settings-bar { 
+            background: var(--primary); color: white; padding: 20px; border-radius: 16px; 
+            display: flex; justify-content: space-between; align-items: center; margin-top: auto;
+        }
+        .primary-btn { 
+            background: white; color: var(--primary); border: none; padding: 12px 24px; 
+            border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.3s;
+        }
+        .primary-btn:hover { background: #f1f5f9; transform: scale(1.05); }
+
+        /* --- SCREEN 3: STUDENT VIEW --- */
+        #screen-3 { background: var(--cyber-dark); color: white; }
+        .cyber-header { text-align: center; margin-bottom: 30px; }
+        .glitch { font-size: 4rem; font-weight: 900; text-transform: uppercase; color: #fff; text-shadow: 2px 2px var(--accent), -2px -2px var(--primary); }
+        
+        .deck-wrapper { perspective: 1000px; margin-bottom: 40px; }
+        .card-deck { 
+            width: 280px; height: 160px; background: var(--cyber-card); 
+            border: 4px solid var(--primary); border-radius: 20px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.8rem; font-weight: bold; box-shadow: 0 0 30px rgba(99, 102, 241, 0.3);
+        }
+        
+        .groups-container { 
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
+            gap: 20px; width: 100%; max-width: 1200px; 
+        }
+        .group-card { 
+            background: var(--cyber-card); padding: 20px; border-radius: 15px; 
+            border-top: 5px solid var(--primary); animation: fadeIn 0.5s ease-out both;
+        }
+        .group-card h3 { color: var(--primary); margin-top: 0; border-bottom: 1px solid #334155; padding-bottom: 10px; }
+        .group-list { list-style: none; padding: 0; margin: 0; text-align: left; }
+        .group-list li { padding: 8px 0; border-bottom: 1px dotted #334155; font-size: 1.1rem; }
+
+        .sort-trigger {
+            background: var(--accent); color: white; border: none; padding: 20px 50px;
+            font-size: 1.5rem; border-radius: 50px; font-weight: bold; cursor: pointer;
+            box-shadow: 0 0 20px rgba(244, 63, 94, 0.4); transition: 0.3s;
+        }
+        .sort-trigger:hover { transform: scale(1.1); box-shadow: 0 0 40px rgba(244, 63, 94, 0.6); }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .pop-anim { animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+    </style>
 </head>
 <body>
 
     <section id="screen-1" class="screen">
-        <h1 class="logo-text">STOKOM SORT</h1>
-        <p>Selecione a Turma para iniciar:</p>
-        <div id="class-options" class="button-grid">
-            </div>
+        <div class="logo-area">
+            <h1>STOKOM SORT</h1>
+            <p>Selecione a turma para começar a organização</p>
+        </div>
+        <div id="class-options" class="button-grid"></div>
     </section>
 
     <section id="screen-2" class="screen hidden">
-        <div class="header-nav">
-            <button onclick="showScreen('screen-1')" class="back-btn">← Voltar</button>
-            <h2>Configuração de Regras</h2>
+        <div class="logo-area" style="margin-bottom: 20px;">
+            <h2 id="current-class-title">Configuração</h2>
         </div>
         
-        <div class="setup-container">
-            <div class="column">
+        <div class="setup-layout">
+            <div class="sidebar">
                 <h3>Estudantes</h3>
+                <p style="font-size: 0.8rem; color: #64748b;">Arraste os nomes para as caixas de regras</p>
                 <div id="student-pool" class="drop-zone" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
             </div>
-            
-            <div class="column">
+
+            <div class="main-setup">
                 <div class="rule-box red" data-rule="absent" ondrop="drop(event)" ondragover="allowDrop(event)">
-                    <h4>Ausentes (Remover)</h4>
+                    <h4>🚫 Ausentes</h4>
                 </div>
                 <div class="rule-box green" data-rule="together" ondrop="drop(event)" ondragover="allowDrop(event)">
-                    <h4>Juntos (Mesmo Grupo)</h4>
+                    <h4>🔗 Devem ficar juntos</h4>
                 </div>
                 <div class="rule-box orange" data-rule="separate" ondrop="drop(event)" ondragover="allowDrop(event)">
-                    <h4>Separados (Grupos Diferentes)</h4>
+                    <h4>✂️ Devem ser separados</h4>
                 </div>
-                
-                <div class="settings-card">
-                    <label>Quantidade de Grupos:</label>
-                    <input type="number" id="group-count" value="4" min="2">
-                    <button class="primary-btn" onclick="generateFinalGroups()">FINALIZAR CONFIGURAÇÃO</button>
+
+                <div class="settings-bar">
+                    <div>
+                        <label>Grupos:</label>
+                        <input type="number" id="group-count" value="4" min="2" style="width: 50px; padding: 5px; border-radius: 5px;">
+                    </div>
+                    <button class="primary-btn" onclick="generateFinalGroups()">TUDO PRONTO</button>
                 </div>
             </div>
         </div>
     </section>
 
     <section id="screen-3" class="screen hidden">
-        <div class="student-header">
-            <h1 class="glitch" data-text="STOKOM SORT">STOKOM SORT</h1>
-        </div>
-        
-        <div id="deck-container">
-            <div class="card-deck">?</div>
-            <button id="sort-btn" class="glow-on-hover" onclick="startSortingAnimation()">SORTEAR GRUPOS</button>
+        <div class="cyber-header">
+            <div class="glitch">STOKOM SORT</div>
+            <p id="sorting-subtitle">Pronto para o sorteio?</p>
         </div>
 
-        <div id="groups-display"></div>
+        <div class="deck-wrapper">
+            <div id="main-deck" class="card-deck">---</div>
+        </div>
+
+        <button id="sort-btn" class="sort-trigger" onclick="runSortingProcess()">INICIAR SORTEIO</button>
+
+        <div id="groups-display" class="groups-container"></div>
     </section>
 
-    <script src="script.js"></script>
+    <script>
+        const studentData = {
+            "6A": ["Antonella", "Gabriel", "Helena", "Jamile", "Leonardo", "Letizia", "Liz", "Lorena", "Lucas S.", "Lucas G.", "Lucas M.", "Luiza", "Manuela", "Maria Luisa", "Maria S.", "Mariana", "Mateus", "Sophia"],
+            "6B": ["Beatriz", "Gabriel N.", "Gabriel B.", "Heitor M.", "Heitor S.", "Helena", "Júlia", "Lorenzo", "Luana", "Manuela A.", "Manuela M.", "Manuella F.", "Manuella P.", "Maria Fernanda", "Miguel", "Mirela", "Nicholas", "Sophia", "Theo"],
+            "7A": ["Andrey", "Arthur P.", "Arthur G.", "Cora", "Davi", "Gustavo", "Igor", "João", "Jonas", "Katarina", "Lavínia", "Manuela", "Paulo", "Sara S.", "Sara H.", "Stella", "Theo", "Valentina", "Victória"],
+            "7B": ["Arthur", "Davi", "Esther", "Guilherme", "Lucas", "Manuela", "Miguel", "Ryan", "Sophia"],
+            "Y8": ["Alice", "Anna Sophia", "Antonella", "Artur", "Beatriz", "Benício", "Caio", "Catarina", "Daniel C.", "Daniel B.", "Filipe", "Giovana", "Gustavo", "João Miguel", "Laura", "Lucas", "Marcello", "Maria", "Maria Eduarda", "Maria Luiza", "Maria Peres", "Mariana", "Nicolas", "Théo", "Thomas", "Thor"],
+            "Y9": ["Bernardo", "Catarina", "Enzo", "Gabriel", "Guilherme", "Isabela B.", "Isabela R.", "Isabela X.", "Isadora", "João", "Júlia", "Júlio", "Lauren", "Lucas", "Maria", "Maria", "Nicholas", "Pedro", "Raphael"]
+        };
+
+        let currentStudents = [];
+        let finalGroups = [];
+
+        // App Init
+        window.onload = () => {
+            const container = document.getElementById('class-options');
+            Object.keys(studentData).sort().forEach(cls => {
+                let b = document.createElement('button');
+                b.className = 'class-btn';
+                b.innerText = cls;
+                b.onclick = () => selectClass(cls);
+                container.appendChild(b);
+            });
+        };
+
+        function showScreen(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+            document.getElementById(id).classList.remove('hidden');
+            window.scrollTo(0,0);
+        }
+
+        function selectClass(cls) {
+            currentStudents = studentData[cls];
+            document.getElementById('current-class-title').innerText = `Turma: ${cls}`;
+            const pool = document.getElementById('student-pool');
+            pool.innerHTML = '';
+            currentStudents.forEach((name, i) => {
+                let d = document.createElement('div');
+                d.className = 'student-pill';
+                d.id = `s-${i}`;
+                d.draggable = true;
+                d.innerText = name;
+                d.ondragstart = (e) => e.dataTransfer.setData("text", e.target.id);
+                pool.appendChild(d);
+            });
+            showScreen('screen-2');
+        }
+
+        function allowDrop(e) { e.preventDefault(); }
+        function drop(e) {
+            e.preventDefault();
+            const id = e.dataTransfer.getData("text");
+            e.currentTarget.appendChild(document.getElementById(id));
+        }
+
+        function generateFinalGroups() {
+            const n = parseInt(document.getElementById('group-count').value);
+            const getNames = (s) => Array.from(document.querySelector(s).querySelectorAll('.student-pill')).map(e => e.innerText);
+
+            const absent = getNames('[data-rule="absent"]');
+            const together = getNames('[data-rule="together"]');
+            const separate = getNames('[data-rule="separate"]');
+            
+            let pool = currentStudents.filter(s => !absent.includes(s));
+            finalGroups = Array.from({ length: n }, () => []);
+
+            // 1. Rigging: Together (Group 1)
+            together.forEach(s => {
+                finalGroups[0].push(s);
+                pool = pool.filter(p => p !== s);
+            });
+
+            // 2. Rigging: Separate (Across groups)
+            separate.forEach((s, i) => {
+                finalGroups[i % n].push(s);
+                pool = pool.filter(p => p !== s);
+            });
+
+            // 3. Random Fill
+            pool.sort(() => Math.random() - 0.5);
+            pool.forEach(s => {
+                let target = finalGroups.reduce((p, c) => p.length <= c.length ? p : c);
+                target.push(s);
+            });
+
+            // Randomize internal group order so it's not obvious
+            finalGroups.forEach(g => g.sort(() => Math.random() - 0.5));
+
+            showScreen('screen-3');
+        }
+
+        async function runSortingProcess() {
+            document.getElementById('sort-btn').classList.add('hidden');
+            const deck = document.getElementById('main-deck');
+            const container = document.getElementById('groups-display');
+            container.innerHTML = '';
+
+            // Prep group boxes
+            finalGroups.forEach((_, i) => {
+                container.innerHTML += `
+                    <div class="group-card">
+                        <h3>GRUPO ${i+1}</h3>
+                        <ul class="group-list" id="glist-${i}"></ul>
+                    </div>`;
+            });
+
+            // Animation logic
+            for (let i = 0; i < finalGroups.length; i++) {
+                for (let student of finalGroups[i]) {
+                    // Shuffle effect
+                    for(let x=0; x<6; x++) {
+                        deck.innerText = currentStudents[Math.floor(Math.random() * currentStudents.length)];
+                        await new Promise(r => setTimeout(r, 60));
+                    }
+                    
+                    deck.innerText = student;
+                    deck.classList.add('pop-anim');
+                    
+                    const li = document.createElement('li');
+                    li.innerText = student;
+                    li.style.opacity = "0";
+                    document.getElementById(`glist-${i}`).appendChild(li);
+                    
+                    // Simple fade in for the name
+                    setTimeout(() => li.style.opacity = "1", 50);
+                    
+                    await new Promise(r => setTimeout(r, 500));
+                    deck.classList.remove('pop-anim');
+                }
+            }
+            deck.innerText = "FINALIZADO";
+            deck.style.borderColor = "#22c55e";
+        }
+    </script>
 </body>
 </html>
