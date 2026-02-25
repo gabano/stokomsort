@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STOKOM SORT</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <section id="screen-1" class="screen">
+        <h1 class="logo-text">STOKOM SORT</h1>
+        <p>Selecione a Turma para iniciar:</p>
+        <div id="class-options" class="button-grid">
+            </div>
+    </section>
+
+    <section id="screen-2" class="screen hidden">
+        <div class="header-nav">
+            <button onclick="showScreen('screen-1')" class="back-btn">← Voltar</button>
+            <h2>Configuração de Regras</h2>
+        </div>
+        
+        <div class="setup-container">
+            <div class="column">
+                <h3>Estudantes</h3>
+                <div id="student-pool" class="drop-zone" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+            </div>
+            
+            <div class="column">
+                <div class="rule-box red" data-rule="absent" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <h4>Ausentes (Remover)</h4>
+                </div>
+                <div class="rule-box green" data-rule="together" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <h4>Juntos (Mesmo Grupo)</h4>
+                </div>
+                <div class="rule-box orange" data-rule="separate" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <h4>Separados (Grupos Diferentes)</h4>
+                </div>
+                
+                <div class="settings-card">
+                    <label>Quantidade de Grupos:</label>
+                    <input type="number" id="group-count" value="4" min="2">
+                    <button class="primary-btn" onclick="generateFinalGroups()">FINALIZAR CONFIGURAÇÃO</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="screen-3" class="screen hidden">
+        <div class="student-header">
+            <h1 class="glitch" data-text="STOKOM SORT">STOKOM SORT</h1>
+        </div>
+        
+        <div id="deck-container">
+            <div class="card-deck">?</div>
+            <button id="sort-btn" class="glow-on-hover" onclick="startSortingAnimation()">SORTEAR GRUPOS</button>
+        </div>
+
+        <div id="groups-display"></div>
+    </section>
+
+    <script src="script.js"></script>
+</body>
+</html>
