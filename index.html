@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>STOKOM SORT | Academic Randomizer</title>
+    <title>STOKOM SORT | Premium Control</title>
     <style>
         :root {
             --primary: #6366f1;
@@ -17,11 +17,10 @@
         }
 
         body { 
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
             background: var(--bg-light); 
             margin: 0; 
             color: var(--text-main);
-            overflow-x: hidden;
         }
 
         .screen { min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 40px 20px; box-sizing: border-box; }
@@ -29,78 +28,55 @@
 
         /* --- SCREEN 1: SELECTION --- */
         .logo-area { text-align: center; margin-bottom: 40px; }
-        .logo-area h1 { font-size: 3rem; margin: 0; letter-spacing: -1px; color: var(--primary); }
-        .button-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; width: 100%; max-width: 800px; }
+        .logo-area h1 { font-size: 3rem; margin: 0; color: var(--primary); font-weight: 800; }
+        .button-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; width: 100%; max-width: 800px; }
         .class-btn { 
-            padding: 25px; font-size: 1.1rem; font-weight: bold; cursor: pointer; border: none; 
-            background: var(--card-bg); color: var(--primary); border-radius: 16px; 
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
-            transition: all 0.2s ease; border: 1px solid #e2e8f0;
+            padding: 20px; font-size: 1.1rem; font-weight: bold; cursor: pointer; border: 1px solid #e2e8f0; 
+            background: var(--card-bg); color: var(--primary); border-radius: 12px; transition: all 0.2s;
         }
-        .class-btn:hover { transform: translateY(-4px); background: var(--primary); color: white; border-color: var(--primary); }
+        .class-btn:hover { transform: translateY(-3px); background: var(--primary); color: white; }
 
-        /* --- SCREEN 2: TEACHER SETUP --- */
-        .setup-layout { display: flex; gap: 30px; width: 100%; max-width: 1200px; margin-top: 20px; }
-        .sidebar { flex: 1; background: #fff; padding: 20px; border-radius: 20px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; }
-        .main-setup { flex: 2; display: flex; flex-direction: column; gap: 20px; }
+        /* --- SCREEN 2: ADVANCED SETUP --- */
+        .setup-layout { display: grid; grid-template-columns: 300px 1fr; gap: 30px; width: 100%; max-width: 1300px; }
+        .sidebar { background: #fff; padding: 20px; border-radius: 20px; border: 1px solid #e2e8f0; height: fit-content; }
+        .rules-container { display: flex; flex-direction: column; gap: 15px; }
         
-        .drop-zone { min-height: 100px; border: 2px dashed #cbd5e1; border-radius: 12px; padding: 10px; display: flex; flex-wrap: wrap; gap: 8px; transition: 0.3s; }
-        .rule-box { background: white; padding: 15px; border-radius: 16px; border-left: 6px solid #ccc; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .rule-box.red { border-color: #ef4444; }
-        .rule-box.green { border-color: #22c55e; }
-        .rule-box.orange { border-color: #f59e0b; }
+        .rule-section { background: white; padding: 15px; border-radius: 12px; border: 1px solid #e2e8f0; }
+        .rule-section h4 { margin: 0 0 10px 0; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
         
+        /* Grid para as caixas de "Together" */
+        .together-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom: 20px; }
+        .together-box { background: #f0fdf4; border: 2px dashed #22c55e; border-radius: 10px; padding: 10px; min-height: 80px; }
+        .together-box h5 { margin: 0 0 5px 0; color: #166534; }
+
+        .drop-zone { min-height: 50px; display: flex; flex-wrap: wrap; gap: 6px; }
         .student-pill { 
-            background: #f1f5f9; padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; 
-            cursor: grab; border: 1px solid #e2e8f0; user-select: none;
+            background: #f1f5f9; padding: 5px 12px; border-radius: 15px; font-size: 0.8rem; 
+            cursor: grab; border: 1px solid #cbd5e1; user-select: none;
         }
-        .student-pill:active { cursor: grabbing; opacity: 0.6; }
 
-        .settings-bar { 
-            background: var(--primary); color: white; padding: 20px; border-radius: 16px; 
-            display: flex; justify-content: space-between; align-items: center; margin-top: auto;
+        .absent-zone { border: 2px dashed #ef4444; background: #fef2f2; padding: 10px; border-radius: 10px; }
+        .separate-zone { border: 2px dashed #f59e0b; background: #fffbeb; padding: 10px; border-radius: 10px; }
+
+        .control-bar { 
+            grid-column: 1 / -1; background: var(--cyber-dark); color: white; 
+            padding: 20px; border-radius: 15px; display: flex; justify-content: space-between; align-items: center;
         }
-        .primary-btn { 
-            background: white; color: var(--primary); border: none; padding: 12px 24px; 
-            border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.3s;
-        }
-        .primary-btn:hover { background: #f1f5f9; transform: scale(1.05); }
 
         /* --- SCREEN 3: STUDENT VIEW --- */
         #screen-3 { background: var(--cyber-dark); color: white; }
-        .cyber-header { text-align: center; margin-bottom: 30px; }
-        .glitch { font-size: 4rem; font-weight: 900; text-transform: uppercase; color: #fff; text-shadow: 2px 2px var(--accent), -2px -2px var(--primary); }
-        
-        .deck-wrapper { perspective: 1000px; margin-bottom: 40px; }
+        .glitch { font-size: 4rem; font-weight: 900; text-shadow: 2px 2px var(--accent), -2px -2px var(--primary); }
         .card-deck { 
-            width: 280px; height: 160px; background: var(--cyber-card); 
-            border: 4px solid var(--primary); border-radius: 20px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.8rem; font-weight: bold; box-shadow: 0 0 30px rgba(99, 102, 241, 0.3);
+            width: 300px; height: 180px; background: var(--cyber-card); border: 4px solid var(--primary); 
+            border-radius: 20px; display: flex; align-items: center; justify-content: center;
+            font-size: 2rem; box-shadow: 0 0 30px rgba(99, 102, 241, 0.4); margin: 30px 0;
         }
-        
-        .groups-container { 
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
-            gap: 20px; width: 100%; max-width: 1200px; 
-        }
-        .group-card { 
-            background: var(--cyber-card); padding: 20px; border-radius: 15px; 
-            border-top: 5px solid var(--primary); animation: fadeIn 0.5s ease-out both;
-        }
-        .group-card h3 { color: var(--primary); margin-top: 0; border-bottom: 1px solid #334155; padding-bottom: 10px; }
-        .group-list { list-style: none; padding: 0; margin: 0; text-align: left; }
-        .group-list li { padding: 8px 0; border-bottom: 1px dotted #334155; font-size: 1.1rem; }
+        .groups-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; width: 100%; max-width: 1200px; }
+        .group-card { background: var(--cyber-card); padding: 20px; border-radius: 15px; border-top: 5px solid var(--primary); }
+        .group-list { list-style: none; padding: 0; text-align: left; }
+        .group-list li { padding: 8px 0; border-bottom: 1px solid #334155; font-size: 1.1rem; }
 
-        .sort-trigger {
-            background: var(--accent); color: white; border: none; padding: 20px 50px;
-            font-size: 1.5rem; border-radius: 50px; font-weight: bold; cursor: pointer;
-            box-shadow: 0 0 20px rgba(244, 63, 94, 0.4); transition: 0.3s;
-        }
-        .sort-trigger:hover { transform: scale(1.1); box-shadow: 0 0 40px rgba(244, 63, 94, 0.6); }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .pop-anim { animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        @keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+        .btn-main { background: var(--accent); color: white; border: none; padding: 15px 40px; border-radius: 30px; font-weight: bold; cursor: pointer; font-size: 1.2rem; }
     </style>
 </head>
 <body>
@@ -108,57 +84,50 @@
     <section id="screen-1" class="screen">
         <div class="logo-area">
             <h1>STOKOM SORT</h1>
-            <p>Selecione a turma para começar a organização</p>
+            <p>Selecione a turma para gerenciar os grupos</p>
         </div>
         <div id="class-options" class="button-grid"></div>
     </section>
 
     <section id="screen-2" class="screen hidden">
-        <div class="logo-area" style="margin-bottom: 20px;">
-            <h2 id="current-class-title">Configuração</h2>
-        </div>
-        
         <div class="setup-layout">
             <div class="sidebar">
-                <h3>Estudantes</h3>
-                <p style="font-size: 0.8rem; color: #64748b;">Arraste os nomes para as caixas de regras</p>
-                <div id="student-pool" class="drop-zone" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                <h3 id="class-title">Estudantes</h3>
+                <div id="student-pool" class="drop-zone" style="min-height: 400px;" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
             </div>
 
-            <div class="main-setup">
-                <div class="rule-box red" data-rule="absent" ondrop="drop(event)" ondragover="allowDrop(event)">
-                    <h4>🚫 Ausentes</h4>
-                </div>
-                <div class="rule-box green" data-rule="together" ondrop="drop(event)" ondragover="allowDrop(event)">
-                    <h4>🔗 Devem ficar juntos</h4>
-                </div>
-                <div class="rule-box orange" data-rule="separate" ondrop="drop(event)" ondragover="allowDrop(event)">
-                    <h4>✂️ Devem ser separados</h4>
+            <div class="rules-container">
+                <div class="rule-section absent-zone">
+                    <h4>🚫 Ausentes (Não participam)</h4>
+                    <div id="absent-logic" class="drop-zone" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
                 </div>
 
-                <div class="settings-bar">
-                    <div>
-                        <label>Grupos:</label>
-                        <input type="number" id="group-count" value="4" min="2" style="width: 50px; padding: 5px; border-radius: 5px;">
-                    </div>
-                    <button class="primary-btn" onclick="generateFinalGroups()">TUDO PRONTO</button>
+                <div class="rule-section">
+                    <h4>🔗 Alocação Direta (Ficam no grupo específico)</h4>
+                    <div id="together-boxes-container" class="together-grid">
+                        </div>
                 </div>
+
+                <div class="rule-section separate-zone">
+                    <h4>✂️ Separar (Garante grupos diferentes)</h4>
+                    <div id="separate-logic" class="drop-zone" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                </div>
+            </div>
+
+            <div class="control-bar">
+                <div>
+                    <label>Quantidade de Grupos:</label>
+                    <input type="number" id="group-count" value="4" min="2" max="10" onchange="updateTogetherBoxes()">
+                </div>
+                <button class="btn-main" style="background: var(--primary);" onclick="generateFinalGroups()">FINALIZAR REGRAS</button>
             </div>
         </div>
     </section>
 
     <section id="screen-3" class="screen hidden">
-        <div class="cyber-header">
-            <div class="glitch">STOKOM SORT</div>
-            <p id="sorting-subtitle">Pronto para o sorteio?</p>
-        </div>
-
-        <div class="deck-wrapper">
-            <div id="main-deck" class="card-deck">---</div>
-        </div>
-
-        <button id="sort-btn" class="sort-trigger" onclick="runSortingProcess()">INICIAR SORTEIO</button>
-
+        <div class="glitch">STOKOM SORT</div>
+        <div id="main-deck" class="card-deck">READY</div>
+        <button id="sort-btn" class="btn-main" onclick="runSortingProcess()">INICIAR SORTEIO</button>
         <div id="groups-display" class="groups-container"></div>
     </section>
 
@@ -175,7 +144,6 @@
         let currentStudents = [];
         let finalGroups = [];
 
-        // App Init
         window.onload = () => {
             const container = document.getElementById('class-options');
             Object.keys(studentData).sort().forEach(cls => {
@@ -187,69 +155,93 @@
             });
         };
 
-        function showScreen(id) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
-            document.getElementById(id).classList.remove('hidden');
-            window.scrollTo(0,0);
-        }
-
         function selectClass(cls) {
             currentStudents = studentData[cls];
-            document.getElementById('current-class-title').innerText = `Turma: ${cls}`;
+            document.getElementById('class-title').innerText = `Turma: ${cls}`;
+            renderPool(currentStudents);
+            updateTogetherBoxes();
+            showScreen('screen-2');
+        }
+
+        function renderPool(list) {
             const pool = document.getElementById('student-pool');
             pool.innerHTML = '';
-            currentStudents.forEach((name, i) => {
+            list.forEach((name, i) => {
                 let d = document.createElement('div');
                 d.className = 'student-pill';
-                d.id = `s-${i}`;
+                d.id = `stu-${i}`;
                 d.draggable = true;
                 d.innerText = name;
                 d.ondragstart = (e) => e.dataTransfer.setData("text", e.target.id);
                 pool.appendChild(d);
             });
-            showScreen('screen-2');
+        }
+
+        function updateTogetherBoxes() {
+            const n = document.getElementById('group-count').value;
+            const container = document.getElementById('together-boxes-container');
+            container.innerHTML = '';
+            for(let i=0; i<n; i++) {
+                container.innerHTML += `
+                    <div class="together-box" ondrop="drop(event)" ondragover="allowDrop(event)" data-group="${i}">
+                        <h5>Grupo ${i+1}</h5>
+                        <div class="drop-zone"></div>
+                    </div>`;
+            }
+        }
+
+        function showScreen(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+            document.getElementById(id).classList.remove('hidden');
         }
 
         function allowDrop(e) { e.preventDefault(); }
         function drop(e) {
             e.preventDefault();
             const id = e.dataTransfer.getData("text");
-            e.currentTarget.appendChild(document.getElementById(id));
+            const element = document.getElementById(id);
+            // Se soltar em uma together-box, coloca no drop-zone interno dela
+            if (e.currentTarget.classList.contains('together-box')) {
+                e.currentTarget.querySelector('.drop-zone').appendChild(element);
+            } else {
+                e.currentTarget.appendChild(element);
+            }
         }
 
         function generateFinalGroups() {
             const n = parseInt(document.getElementById('group-count').value);
-            const getNames = (s) => Array.from(document.querySelector(s).querySelectorAll('.student-pill')).map(e => e.innerText);
-
-            const absent = getNames('[data-rule="absent"]');
-            const together = getNames('[data-rule="together"]');
-            const separate = getNames('[data-rule="separate"]');
+            const getNamesFrom = (selector) => Array.from(document.querySelector(selector).querySelectorAll('.student-pill')).map(e => e.innerText);
+            
+            const absent = getNamesFrom('#absent-logic');
+            const separate = getNamesFrom('#separate-logic');
             
             let pool = currentStudents.filter(s => !absent.includes(s));
             finalGroups = Array.from({ length: n }, () => []);
 
-            // 1. Rigging: Together (Group 1)
-            together.forEach(s => {
-                finalGroups[0].push(s);
-                pool = pool.filter(p => p !== s);
+            // 1. Regra: Together (Alocação específica por caixa)
+            for(let i=0; i<n; i++) {
+                const namesInBox = Array.from(document.querySelectorAll(`.together-box[data-group="${i}"] .student-pill`)).map(e => e.innerText);
+                namesInBox.forEach(name => {
+                    finalGroups[i].push(name);
+                    pool = pool.filter(p => p !== name);
+                });
+            }
+
+            // 2. Regra: Separate (Um em cada grupo disponível)
+            separate.forEach((name, i) => {
+                finalGroups[i % n].push(name);
+                pool = pool.filter(p => p !== name);
             });
 
-            // 2. Rigging: Separate (Across groups)
-            separate.forEach((s, i) => {
-                finalGroups[i % n].push(s);
-                pool = pool.filter(p => p !== s);
-            });
-
-            // 3. Random Fill
+            // 3. Preenchimento Aleatório Restante
             pool.sort(() => Math.random() - 0.5);
-            pool.forEach(s => {
+            pool.forEach(name => {
                 let target = finalGroups.reduce((p, c) => p.length <= c.length ? p : c);
-                target.push(s);
+                target.push(name);
             });
 
-            // Randomize internal group order so it's not obvious
+            // Shuffle interno para não parecer "rigged"
             finalGroups.forEach(g => g.sort(() => Math.random() - 0.5));
-
             showScreen('screen-3');
         }
 
@@ -259,41 +251,24 @@
             const container = document.getElementById('groups-display');
             container.innerHTML = '';
 
-            // Prep group boxes
             finalGroups.forEach((_, i) => {
-                container.innerHTML += `
-                    <div class="group-card">
-                        <h3>GRUPO ${i+1}</h3>
-                        <ul class="group-list" id="glist-${i}"></ul>
-                    </div>`;
+                container.innerHTML += `<div class="group-card"><h3>GRUPO ${i+1}</h3><ul class="group-list" id="glist-${i}"></ul></div>`;
             });
 
-            // Animation logic
             for (let i = 0; i < finalGroups.length; i++) {
                 for (let student of finalGroups[i]) {
-                    // Shuffle effect
-                    for(let x=0; x<6; x++) {
+                    for(let x=0; x<5; x++) {
                         deck.innerText = currentStudents[Math.floor(Math.random() * currentStudents.length)];
-                        await new Promise(r => setTimeout(r, 60));
+                        await new Promise(r => setTimeout(r, 50));
                     }
-                    
                     deck.innerText = student;
-                    deck.classList.add('pop-anim');
-                    
                     const li = document.createElement('li');
                     li.innerText = student;
-                    li.style.opacity = "0";
                     document.getElementById(`glist-${i}`).appendChild(li);
-                    
-                    // Simple fade in for the name
-                    setTimeout(() => li.style.opacity = "1", 50);
-                    
-                    await new Promise(r => setTimeout(r, 500));
-                    deck.classList.remove('pop-anim');
+                    await new Promise(r => setTimeout(r, 400));
                 }
             }
             deck.innerText = "FINALIZADO";
-            deck.style.borderColor = "#22c55e";
         }
     </script>
 </body>
